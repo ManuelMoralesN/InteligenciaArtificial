@@ -583,7 +583,7 @@ GameObject:
   - component: {fileID: 667569025}
   m_Layer: 0
   m_Name: TargetCylinder
-  m_TagString: Untagged
+  m_TagString: MovingObject
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -692,7 +692,7 @@ MonoBehaviour:
   TiempoTranscurrido: 5
   MaxSpeed: 3
   Velocity: {x: 0, y: 0, z: 0}
-  MaxAcceleration: 5
+  MaxAcceleration: 4
   targetGameObject: {fileID: 0}
   PatrolPoints:
   - {fileID: 391038639}
@@ -1023,11 +1023,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ad8d472bcfaf064c8e03116326355ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  visionRadius: 5
+  visionRadius: 7
   visionAngle: 60
   coneColorDetected: {r: 1, g: 0, b: 0, a: 1}
   coneColorIdle: {r: 0, g: 1, b: 0, a: 1}
-  speed: 5
+  speed: 6
+  targetTag: MovingObject
 --- !u!135 &1105184272
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -1108,7 +1109,7 @@ Transform:
   m_GameObject: {fileID: 1105184270}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2.71, y: -0.09, z: -8.32}
+  m_LocalPosition: {x: 0.13, y: 4.54, z: -5.22}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
