@@ -13,12 +13,18 @@ public class VisionCone : MonoBehaviour
 
     [SerializeField]
     public float speed = 5f;
-    
     public string targetTag = "MovingObject"; // El tag que el objeto debe tener para ser detectado
+
     private Transform target; //El objetivo cuando algo pase enfrente
-
-
     private bool targetDetected = false;
+    private Vector3 initialPosition;  // Posición inicial del agente
+    private bool returningToStart = false;  // Bandera para saber si el agente está regresando
+
+    void Start()
+    {
+        // Almacenar la posición inicial del agente al comienzo
+        initialPosition = transform.position;
+    }
 
     void Update()
     {
@@ -26,9 +32,15 @@ public class VisionCone : MonoBehaviour
 
         if (targetDetected && target != null)
         {
-            // Movimiento básico de persecución
+            // Movimiento de persecución hacia el objetivo
+            returningToStart = false; // Ya no estamos regresando
             Vector3 direction = (target.position - transform.position).normalized;
             transform.position += direction * speed * Time.deltaTime;
+        }
+        else if (!returningToStart)
+        {
+            // Si no hay objetivo y no estamos regresando, volver a la posición inicial
+            StartCoroutine(ReturnToInitialPosition());
         }
     }
 
@@ -46,7 +58,7 @@ public class VisionCone : MonoBehaviour
                 Transform detectedTarget = targetCollider.transform;
                 Vector3 directionToTarget = (detectedTarget.position - transform.position).normalized;
 
-                // Aquí calculamos el ángulo entre la dirección hacia el objetivo y la dirección del agente usando el producto punto
+                // Calcular el ángulo entre la dirección hacia el objetivo y la dirección del agente usando el producto punto
                 float dotProduct = Vector3.Dot(transform.forward, directionToTarget);
                 float angleToTarget = Mathf.Acos(dotProduct) * Mathf.Rad2Deg;
 
@@ -61,6 +73,23 @@ public class VisionCone : MonoBehaviour
         }
 
         target = null;  // Si no detecta ningún objetivo
+    }
+
+    // Corrutina para regresar a la posición inicial
+    IEnumerator ReturnToInitialPosition()
+    {
+        returningToStart = true;
+        
+        while (Vector3.Distance(transform.position, initialPosition) > 0.1f)
+        {
+            Vector3 direction = (initialPosition - transform.position).normalized;
+            transform.position += direction * speed * Time.deltaTime;
+            yield return null;  // Esperar un frame
+        }
+
+        // Asegurarse de que el agente esté exactamente en la posición inicial al finalizar
+        transform.position = initialPosition;
+        returningToStart = false;
     }
 
     // Visualización del cono de visión con Gizmos
@@ -90,6 +119,7 @@ public class VisionCone : MonoBehaviour
         return new Vector3(Mathf.Sin(angleInRadians), 0, Mathf.Cos(angleInRadians));  // Usamos seno y coseno para obtener la dirección
     }
 }
+
 
 //Links, referencias, paginas, etc. https://www.domestika.org/es/courses/716-introduccion-a-unity-para-videojuegos-2d, https://youtu.be/lV47ED8h61k?si=6m012cxUMIkJvd5z, 
 //https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwjG19nWr9mIAxVrJEQIHSANN1UQFnoECBkQAQ&url=https%3A%2F%2Fdocs.unity3d.com%2FScriptReference%2FGizmos.html&usg=AOvVaw3Lkfm2k27FE7PVsjCHF7Xw&opi=89978449
